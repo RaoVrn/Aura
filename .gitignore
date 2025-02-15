@@ -1,0 +1,15 @@
+# Ignore environment files
+.env
+backend/.env
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore node_modules (for React frontend)
+frontend/node_modules/
+
+# Ignore virtual environments (if using one)
+venv/
