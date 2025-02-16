@@ -25,7 +25,7 @@ function Chat() {
     setIsLoading(true);
 
     try {
-      const res = await axios.post("http://127.0.0.1:5000/api/chat", { query });
+      const res = await axios.post("http://127.0.0.1:5000/ask", { query });
       const aiMessage = { text: res.data.response, sender: "ai" };
       setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {

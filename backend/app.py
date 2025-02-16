@@ -1,30 +1,27 @@
-import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import google.generativeai as genai
-from dotenv import load_dotenv  # Import dotenv
+import os
+from dotenv import load_dotenv
+from gemini_rag import ask_gemini
 
-# Load .env file
+# Load environment variables
 load_dotenv()
 
-# Get API Key from .env
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-genai.configure(api_key=GEMINI_API_KEY)
-
 app = Flask(__name__)
-CORS(app)
+CORS(app)  # Enable CORS for frontend requests
 
-def get_ai_response(prompt):
-    model = genai.GenerativeModel("gemini-pro")
-    response = model.generate_content(prompt)
-    return response.text if response else "Sorry, I couldn't process that."
-
-@app.route("/api/chat", methods=["POST"])
-def chat():
+@app.route('/ask', methods=['POST'])
+def ask():
+    """API endpoint to handle user queries"""
     data = request.json
     user_query = data.get("query", "")
-    response = get_ai_response(user_query)
+    
+    if not user_query:
+        return jsonify({"error": "Query cannot be empty"}), 400
+
+    response = ask_gemini(user_query)
     return jsonify({"response": response})
 
-if __name__ == "__main__":
-    app.run(debug=True)
+if __name__ == '__main__':
+    port = int(os.getenv("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
